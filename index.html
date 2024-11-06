@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubaai Successful Card Redirection</title>
+    <style>
+        body,
+        html {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 400px;
+            padding: 20px;
+            margin: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: linear-gradient(90deg, rgba(2, 59, 171, 1) 0%, rgba(4, 119, 224, 1) 100%);
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="message">
+            Your card has been successfully added to Sampath Paycorp services for your payments.
+        </div>
+        <button class="button" id="continueButton">Continue</button>
+    </div>
+
+    <script>
+        // Wait for the InAppWebView platform to be ready
+        window.addEventListener("flutterInAppWebViewPlatformReady", function (event) {
+            // Select the button by its ID
+            var button = document.getElementById('continueButton');
+
+            // Add a click event listener to the button
+            button.addEventListener('click', function () {
+                // Prepare the message and current URL
+                var message = "Exit";
+                var currentUrl = window.location.href;
+
+                // Extract URL parameters if needed
+                var urlParams = new URLSearchParams(window.location.search);
+                var params = {};
+                urlParams.forEach((value, key) => {
+                    params[key] = value;
+                });
+
+                // Send data to Flutter via the 'urlHandler'
+                window.flutter_inappwebview.callHandler('urlHandler', message, currentUrl, params)
+                    .then(function (response) {
+                        console.log("Response from Flutter:", response);
+                        // Optionally handle the response from Flutter
+                    })
+                    .catch(function (error) {
+                        console.error("Error calling Flutter handler:", error);
+                    });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
