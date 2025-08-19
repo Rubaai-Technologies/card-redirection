@@ -60,34 +60,33 @@
     </div>
 
     <script>
-        // Wait for the InAppWebView platform to be ready
-        window.addEventListener("flutterInAppWebViewPlatformReady", function (event) {
-            // Select the button by its ID
-            var button = document.getElementById('continueButton');
+        // Select the button by its ID
+        var button = document.getElementById('continueButton');
 
-            // Add a click event listener to the button
-            button.addEventListener('click', function () {
-                // Prepare the message and current URL
-                var message = "Exit";
-                var currentUrl = window.location.href;
-
-                // Extract URL parameters if needed
+        // Add a click event listener to the button
+        button.addEventListener('click', function () {
+            // Check if the Flutter-injected channel 'messageHandler' exists
+            if (window.messageHandler) {
+                // 1. Get URL parameters
                 var urlParams = new URLSearchParams(window.location.search);
                 var params = {};
                 urlParams.forEach((value, key) => {
                     params[key] = value;
                 });
 
-                // Send data to Flutter via the 'urlHandler'
-                window.flutter_inappwebview.callHandler('urlHandler', message, currentUrl, params)
-                    .then(function (response) {
-                        console.log("Response from Flutter:", response);
-                        // Optionally handle the response from Flutter
-                    })
-                    .catch(function (error) {
-                        console.error("Error calling Flutter handler:", error);
-                    });
-            });
+                // 2. Prepare the data object
+                const dataToSend = {
+                    message: "Exit",
+                    url: window.location.href,
+                    params: params
+                };
+
+                // 3. Convert the object to a JSON string and send it
+                messageHandler.postMessage(JSON.stringify(dataToSend));
+
+            } else {
+                console.error("Flutter JavaScript channel not found.");
+            }
         });
     </script>
 
